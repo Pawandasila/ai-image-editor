@@ -3,7 +3,7 @@
 import FeaturesSection from "@/components/features";
 import InteractiveStats from "@/components/interactive-stats";
 import PricingSection from "@/components/pricing";
-
+import { motion } from "framer-motion";
 
 import React, { useState, useEffect, useRef } from "react";
 import {
@@ -363,43 +363,87 @@ const HeroSection = () => {
 
   return (
     <section className="relative h-full overflow-hidden">
-      <div className="text-center z-10 px-6">
-        <div
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        className="text-center z-10 px-6"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
           className={`transition-all duration-1000 ${textVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
         >
-          <h1 className="text-7xl md:text-9xl font-black mb-6 tracking-tight">
-            <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent animate-pulse">
+          <motion.h1
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="text-7xl md:text-9xl font-black mb-6 tracking-tight"
+          >
+            <motion.span
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 bg-clip-text text-transparent animate-pulse"
+            >
               Create
-            </span>
+            </motion.span>
             <br />
-            <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
+            <motion.span
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+              className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent"
+            >
               Without Limits
-            </span>
-          </h1>
+            </motion.span>
+          </motion.h1>
 
-          <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.0 }}
+            className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed"
+          >
             Professional image editing powered by cutting-edge AI. Transform
             your vision into reality with neural-enhanced tools.
-          </p>
+          </motion.p>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
-            <button className="group cursor-pointer relative px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full font-semibold text-lg hover:scale-105 transition-all duration-300 shadow-2xl shadow-purple-500/25">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.2 }}
+            className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
+          >
+            <motion.button
+              whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(147, 51, 234, 0.3)" }}
+              whileTap={{ scale: 0.95 }}
+              className="group cursor-pointer relative px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full font-semibold text-lg transition-all duration-300 shadow-2xl shadow-purple-500/25"
+            >
               <span className="flex items-center">
                 ✨ Start Creating Now
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </span>
-            </button>
+            </motion.button>
 
-            <button className="group cursor-pointer px-8 py-4 bg-white/10 backdrop-blur-lg rounded-full font-semibold text-lg border border-white/20 hover:bg-white/20 transition-all duration-300">
+            <motion.button
+              whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+              whileTap={{ scale: 0.95 }}
+              className="group cursor-pointer px-8 py-4 bg-white/10 backdrop-blur-lg rounded-full font-semibold text-lg border border-white/20 hover:bg-white/20 transition-all duration-300"
+            >
               <span className="flex items-center">
                 <Play className="mr-2 w-5 h-5" />
                 Watch Demo
               </span>
-            </button>
-          </div>
-        </div>
+            </motion.button>
+          </motion.div>
+        </motion.div>
 
-        <div
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 1.4 }}
           ref={containerRef}
           className="relative max-w-6xl mx-auto"
           onMouseEnter={() => setIsHovering(true)}
@@ -588,8 +632,8 @@ const HeroSection = () => {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
     </section>
   );
 };

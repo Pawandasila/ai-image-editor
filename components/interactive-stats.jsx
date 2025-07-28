@@ -5,6 +5,7 @@ import {
   useIntersectionObserver,
 } from "@/hooks/use-landing-hooks";
 import { useEffect } from "react";
+import { motion } from "framer-motion";
 
 const AnimatedCounter = ({ target, suffix = "", duration = 2000 }) => {
   const [ref, isVisible] = useIntersectionObserver();
@@ -34,26 +35,54 @@ const InteractiveStats = () => {
   ];
 
   return (
-    <section className="py-20">
+    <motion.section 
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8 }}
+      className="py-20"
+    >
       <div className="max-w-6xl mx-auto px-6">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="grid grid-cols-2 lg:grid-cols-4 gap-8"
+        >
           {stats.map((stat, index) => (
-            <div key={index} className="text-center">
-              <div className="text-4xl lg:text-5xl font-bold mb-2">
+            <motion.div 
+              key={index} 
+              initial={{ opacity: 0, y: 30, scale: 0.9 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={{ scale: 1.05, y: -5 }}
+              className="text-center"
+            >
+              <motion.div 
+                initial={{ scale: 0 }}
+                whileInView={{ scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: (index * 0.1) + 0.3 }}
+                className="text-4xl lg:text-5xl font-bold mb-2"
+              >
                 <AnimatedCounter target={stat.value} suffix={stat.suffix} />
-              </div>
-              {/* <div className="text-4xl lg:text-5xl font-bold mb-2 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                {stat.value.toLocaleString()}
-                {stat.suffix}
-              </div> */}
-              <div className="text-gray-400 uppercase tracking-wider text-sm">
+              </motion.div>
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: (index * 0.1) + 0.5 }}
+                className="text-gray-400 uppercase tracking-wider text-sm"
+              >
                 {stat.label}
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 
