@@ -43,7 +43,7 @@ export const metadata = {
     title: "Pixora | Free Online AI Image Editor & Photo Enhancer",
     description:
       "Edit, enhance, and generate images instantly with Pixora's free online AI image editor. Remove backgrounds, upscale, and apply AI-powered effects in your browser.",
-    url: "https://pixora.app/",
+    url: "https://pixora-image-editor.vercel.app/",
     siteName: "Pixora",
     images: [
       {
