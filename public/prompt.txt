@@ -1,0 +1,123 @@
+Create a cutting-edge React landing page for an AI image editor using Tailwind CSS that feels like it's from 2025. This should be a bold, futuristic design that makes visitors say "whoa" - not your typical corporate website.
+
+**Tech Stack Requirements:**
+- React functional components with hooks (useState, useEffect, useRef)
+- Tailwind CSS for all styling (no custom CSS)
+- Framer Motion for animations and gestures
+- React Intersection Observer hook for scroll animations
+- Custom React hooks for cursor tracking and parallax effects
+
+**Visual Style & Effects:**
+- Dark theme using Tailwind's slate-900/black backgrounds
+- Custom animated cursor component that follows mouse with useEffect
+- Glassmorphism using Tailwind's backdrop-blur and bg-white/10
+- Floating geometric shapes with Tailwind's blur-3xl filters
+- Gradient animations using Tailwind's animate-pulse and bg-gradient-to-r
+- 3D transform effects using Tailwind's transform, rotate-x, rotate-y classes
+- Parallax scrolling with custom React hook tracking scroll position
+
+**Component Structure:**
+
+1. **App Component:**
+   - Custom cursor state management
+   - Scroll position tracking with useEffect
+   - Intersection Observer setup for animations
+
+2. **CustomCursor Component:**
+   - useState for cursor position
+   - useEffect for mousemove event listeners
+   - Tailwind classes: fixed, w-5, h-5, bg-blue-500, rounded-full, pointer-events-none
+   - Conditional scaling on hover using state
+
+3. **FloatingShapes Component:**
+   - Array of shapes with random positions
+   - useEffect for continuous rotation animations
+   - Tailwind classes: absolute, w-72, h-72, bg-gradient-to-r, blur-3xl, animate-pulse
+
+4. **GlassNavigation Component:**
+   - Fixed positioning with Tailwind's fixed, top-4, left-1/2, transform, -translate-x-1/2
+   - Glassmorphism: backdrop-blur-lg, bg-white/10, border, border-white/20, rounded-full
+   - Navigation state management for active links
+   - Hover effects using Tailwind's hover: prefix
+
+5. **HeroSection Component:**
+   - Full height using h-screen, flex, items-center, justify-center
+   - Gradient text using bg-gradient-to-r, bg-clip-text, text-transparent
+   - Custom React hook for text glitch animation effect
+   - 3D demo interface with useState for hover states
+   - Floating layers animation using Framer Motion
+
+6. **FeatureCard Component:**
+   - Reusable component with props for icon, title, description
+   - Glass effect: backdrop-blur-lg, bg-white/5, border-white/10
+   - Hover animations with Tailwind's hover:transform, hover:scale-105
+   - Intersection Observer hook for reveal animations
+
+7. **InteractiveStats Component:**
+   - Counter animation using useState and useEffect
+   - Number increment animation from 0 to target value
+   - Gradient numbers using Tailwind gradient classes
+
+8. **PricingCard Component:**
+   - Conditional featured styling using props
+   - Popular badge positioned with absolute positioning
+   - Glass morphism effects
+   - Scale transforms for featured card
+
+**Animation Implementation:**
+- Framer Motion for component entrance animations
+- Custom useIntersectionObserver hook for scroll-triggered animations
+- useState for hover states on interactive elements
+- useEffect for continuous animations (floating shapes, gradient shifts)
+- Custom useParallax hook for background shape movement
+- useMousePosition hook for cursor following effects
+
+**Tailwind Classes to Emphasize:**
+- Dark theme: bg-slate-900, text-white
+- Glassmorphism: backdrop-blur-lg, bg-white/10, border-white/20
+- Gradients: bg-gradient-to-r, from-blue-500, via-purple-500, to-cyan-500
+- 3D effects: transform, perspective-1000, rotate-x-2, rotate-y-2
+- Hover states: hover:scale-105, hover:rotate-1, hover:shadow-2xl
+- Responsive: sm:, md:, lg:, xl: prefixes throughout
+- Animation: animate-pulse, animate-bounce, animate-spin
+
+**State Management Patterns:**
+- useState for component-level animations and interactions
+- useEffect for mounting/unmounting event listeners
+- useCallback for optimized event handlers
+- useMemo for expensive calculations (parallax positions)
+- useRef for DOM element references (intersection observer targets)
+
+**Performance Optimizations:**
+- React.memo for heavy animation components
+- useCallback for event handlers to prevent re-renders
+- Custom debounced hooks for scroll and mouse events
+- Conditional rendering for mobile vs desktop interactions
+- Lazy loading for below-fold components
+
+**Interactive Elements:**
+- Custom cursor component that scales on hover over buttons/cards
+- 3D tilt effects using mouse position and transform calculations
+- Smooth scroll navigation using scrollIntoView with behavior: 'smooth'
+- Gradient animations using CSS custom properties updated via React state
+- Form interactions with controlled components and validation
+
+**Content & Theming:**
+- Futuristic, bold headlines ("The Future of Image Creation")
+- Sci-fi inspired feature names ("Neural Background Removal", "Quantum Upscaling")
+- Action-oriented CTAs ("Experience the Magic", "Unleash Power")
+- Premium pricing that reflects advanced capabilities
+
+**Mobile Responsiveness:**
+- Disable cursor effects on touch devices using useEffect with window.matchMedia
+- Stack layouts using Tailwind's responsive prefixes
+- Touch-friendly button sizes and spacing
+- Reduced motion for performance on mobile devices
+
+**Component Props Structure:**
+- FeatureCard: { icon, title, description, delay }
+- PricingCard: { plan, price, features, featured, buttonText }
+- AnimatedCounter: { target, duration, suffix }
+- GlassButton: { children, variant, size, onClick }
+
+This should create a React application with smooth animations, modern interactions, and a premium feel using only Tailwind CSS classes and React hooks for all functionality.
