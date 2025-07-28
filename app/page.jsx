@@ -419,6 +419,7 @@ const HeroSection = () => {
             <motion.button
               whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(147, 51, 234, 0.3)" }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => window.location.href = '/dashboard'}
               className="group cursor-pointer relative px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full font-semibold text-lg transition-all duration-300 shadow-2xl shadow-purple-500/25"
             >
               <span className="flex items-center">
