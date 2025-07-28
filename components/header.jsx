@@ -9,6 +9,7 @@ import { BarLoader } from "react-spinners";
 import { Authenticated, Unauthenticated } from "convex/react";
 import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
+import { motion } from "framer-motion";
 
 export default function Header() {
   const { isLoading } = useStoreUser();
@@ -32,12 +33,29 @@ export default function Header() {
   const navItems = [
     { href: "#features", label: "Features" },
     { href: "#pricing", label: "Pricing" },
-    { href: "#contact", label: "Contact" },
   ];
+
+  // Smooth scroll function
+  const scrollToSection = (href) => {
+    if (href.startsWith("#")) {
+      const elementId = href.substring(1);
+      const element = document.getElementById(elementId);
+      if (element) {
+        const offsetTop = element.offsetTop - 100; // Account for fixed header
+        window.scrollTo({
+          top: offsetTop,
+          behavior: "smooth",
+        });
+      }
+    }
+  };
 
   return (
     <>
-      <header
+      <motion.header
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
             ? "bg-slate-900/90 backdrop-blur-xl border-b border-white/10 shadow-xl"
@@ -62,15 +80,18 @@ export default function Header() {
             {/* Desktop Navigation */}
             {path === "/" && (
               <nav className="hidden lg:flex items-center space-x-8">
-                {navItems.map((item) => (
-                  <Link
+                {navItems.map((item, index) => (
+                  <motion.button
                     key={item.href}
-                    href={item.href}
-                    className="relative text-gray-300 hover:text-white font-medium transition-all duration-300 group"
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    onClick={() => scrollToSection(item.href)}
+                    className="relative text-gray-300 hover:text-white font-medium transition-all duration-300 group cursor-pointer"
                   >
                     {item.label}
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-cyan-400 group-hover:w-full transition-all duration-300" />
-                  </Link>
+                  </motion.button>
                 ))}
               </nav>
             )}
@@ -169,20 +190,31 @@ export default function Header() {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden absolute top-full left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-b border-white/10 shadow-2xl">
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="lg:hidden absolute top-full left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-b border-white/10 shadow-2xl"
+          >
             <div className="max-w-7xl mx-auto px-4 py-6 space-y-4">
               {/* Mobile Navigation */}
               {path === "/" && (
                 <nav className="space-y-3">
-                  {navItems.map((item) => (
-                    <Link
+                  {navItems.map((item, index) => (
+                    <motion.button
                       key={item.href}
-                      href={item.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="block text-gray-300 hover:text-white font-medium py-2 px-4 rounded-lg hover:bg-white/10 transition-all duration-300"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                      onClick={() => {
+                        scrollToSection(item.href);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="block w-full text-left text-gray-300 hover:text-white font-medium py-2 px-4 rounded-lg hover:bg-white/10 transition-all duration-300"
                     >
                       {item.label}
-                    </Link>
+                    </motion.button>
                   ))}
                 </nav>
               )}
@@ -240,7 +272,7 @@ export default function Header() {
                 </Unauthenticated>
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* Loading Bar */}
@@ -249,7 +281,7 @@ export default function Header() {
             <BarLoader width="100%" height={3} color="#06b6d4" />
           </div>
         )}
-      </header>
+      </motion.header>
 
       {/* Spacer to prevent content from hiding behind fixed header */}
       <div className="h-20" />
