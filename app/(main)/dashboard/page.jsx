@@ -71,7 +71,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen pt-26 pb-16 ">
+    <div className="min-h-screen pt-10">
       <div className="flex h-full">
         <FolderSidebar
           selectedFolderId={selectedFolderId}
