@@ -659,7 +659,7 @@ const App = () => {
           <p className="text-xl text-gray-300 mb-8 leading-relaxed">
             Join thousands of creators who are already using AI to transform their images and bring their wildest visions to life.
           </p>
-          <button className="group relative px-10 py-5 bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 rounded-full font-bold text-xl hover:scale-105 transition-all duration-300 shadow-2xl shadow-purple-500/25">
+          <button className="group relative px-10 py-5 bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 rounded-full font-bold text-xl hover:scale-105 transition-all duration-300 shadow-2xl shadow-purple-500/25" onClick={() => window.location.href='/dashboard'}>
             <span className="flex items-center">
               🌟 Start Creating Now
               <Sparkles className="ml-3 w-6 h-6 group-hover:animate-spin" />
