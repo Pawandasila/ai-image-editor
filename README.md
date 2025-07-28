@@ -2,7 +2,7 @@
 
 A modern, full-stack AI image editing platform built with Next.js, featuring real-time canvas editing, AI-powered transformations, and professional-grade image processing tools.
 
-![Landing Page](https://github.com/user-attachments/assets/5d0bef0e-43b1-4756-9b2c-64ba8fb5e482)
+![Landing Page](https://github.com/user-attachments/assets/9a2dbf8f-6b48-43aa-85a4-d5d5922d70a1)
 
 ## 📸 Screenshots
 
@@ -10,12 +10,16 @@ A modern, full-stack AI image editing platform built with Next.js, featuring rea
 <summary>🖥️ View Application Screenshots</summary>
 
 ### Dashboard
-![Dashboard](https://github.com/user-attachments/assets/8c35dd30-1d62-4fef-8db6-0f4ffa097947)
+![Dashboard](https://github.com/user-attachments/assets/5454d133-9c04-4d1c-b15a-8b793782db8f)
 *Project management and organization*
 
 ### Image Editor
-![Editor Interface](https://github.com/user-attachments/assets/63d060f1-6d6a-4223-9ff1-88a1dda847a8)
+![Editor Interface](https://github.com/user-attachments/assets/77d198ad-1c15-4bae-948a-ceff6aeda1d6)
 *Professional editing interface with AI tools*
+
+### Adding a New Project
+![Adding New Project](https://github.com/user-attachments/assets/5b72799f-33fe-4b06-9060-2479e4fb13b0)
+*Creating new projects and managing folders*
 
 </details>
 
@@ -35,7 +39,15 @@ A modern, full-stack AI image editing platform built with Next.js, featuring rea
 - **Canvas Tools**: Crop, resize, rotate, layers management
 - **Text Tools**: Typography with custom fonts and styling
 
+### 📁 Project Organization
+- **Smart Folders**: Create custom folders to organize your projects
+- **Folder Navigation**: Intuitive sidebar navigation with breadcrumb trails
+- **Project Assignment**: Assign projects to folders during creation or move them later
+- **Folder Management**: Create, rename, and delete folders with automatic project handling
+- **Visual Organization**: Clean dashboard view showing projects by folder or all projects
+
 ### 🚀 Platform Features
+- **Project Organization**: Folder-based project management with drag-and-drop organization
 - **Real-time Collaboration**: Live canvas updates
 - **Cloud Storage**: Secure project saving with Convex database
 - **Image Pipeline**: ImageKit integration for optimized processing
@@ -128,6 +140,11 @@ ai-image/
 │   │   └── sign-up/
 │   ├── (main)/                   # Main application
 │   │   ├── dashboard/            # User dashboard
+│   │   │   └── _components/      # Dashboard components
+│   │   │       ├── folder-sidebar.jsx      # Folder navigation
+│   │   │       ├── new-project-modal.jsx   # Project creation with folder support
+│   │   │       ├── project-grid.jsx        # Project display grid
+│   │   │       └── project-card.jsx        # Individual project cards
 │   │   └── editor/[projectId]/   # Image editor
 │   ├── api/                      # API routes
 │   └── globals.css               # Global styles
@@ -137,9 +154,9 @@ ai-image/
 │   ├── pricing.jsx               # Pricing section
 │   └── ...
 ├── convex/                       # Backend functions & schema
-│   ├── projects.js               # Project CRUD operations
-│   ├── users.js                  # User management
-│   └── schema.js                 # Database schema
+│   ├── projects.js               # Project CRUD & folder operations
+│   ├── users.js                  # User management & plan handling
+│   └── schema.js                 # Database schema (users, projects, folders)
 ├── context/                      # React contexts
 ├── hooks/                        # Custom React hooks
 ├── lib/                          # Utility functions
@@ -147,6 +164,12 @@ ai-image/
 ```
 
 ## 🎨 Key Components
+
+### Dashboard & Organization
+- **Folder Sidebar**: Hierarchical project organization with folder management
+- **Project Grid**: Visual project browser with folder filtering
+- **Breadcrumb Navigation**: Clear navigation path showing current folder location
+- **Project Assignment**: Seamless project-to-folder assignment during creation
 
 ### Canvas Editor
 - **Fabric.js Integration**: Advanced canvas manipulation
@@ -172,7 +195,7 @@ ai-image/
 The application uses Convex with the following main tables:
 - `users`: User profiles and subscription data
 - `projects`: Image editing projects and canvas state
-- `folders`: Project organization (optional)
+- `folders`: Project organization and folder management
 
 ### Plan Limits
 - **Free Plan**: 3 projects, 20 exports/month, basic tools
