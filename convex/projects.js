@@ -2,7 +2,7 @@ import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { internal } from "./_generated/api";
 
-// Get all projects for the current user
+// Get all projects for the current user with folder information
 export const getUserProjects = query({
   handler: async (ctx) => {
     const user = await ctx.runQuery(internal.users.getCurrentUser);
@@ -18,6 +18,159 @@ export const getUserProjects = query({
   },
 });
 
+// Get projects by folder
+export const getProjectsByFolder = query({
+  args: { folderId: v.optional(v.union(v.id("folders"), v.null())) },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(internal.users.getCurrentUser);
+
+    if (args.folderId) {
+      // Get projects in specific folder
+      return await ctx.db
+        .query("projects")
+        .withIndex("by_folder", (q) => q.eq("folderId", args.folderId))
+        .filter((q) => q.eq(q.field("userId"), user._id))
+        .order("desc")
+        .collect();
+    } else {
+      // Get projects not in any folder (folderId is null, undefined, or falsy)
+      return await ctx.db
+        .query("projects")
+        .withIndex("by_user", (q) => q.eq("userId", user._id))
+        .filter((q) => q.or(
+          q.eq(q.field("folderId"), undefined),
+          q.eq(q.field("folderId"), null)
+        ))
+        .order("desc")
+        .collect();
+    }
+  },
+});
+
+// Get all folders for the current user
+export const getUserFolders = query({
+  handler: async (ctx) => {
+    const user = await ctx.runQuery(internal.users.getCurrentUser);
+
+    return await ctx.db
+      .query("folders")
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .order("asc")
+      .collect();
+  },
+});
+
+// Create a new folder
+export const createFolder = mutation({
+  args: { name: v.string() },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(internal.users.getCurrentUser);
+
+    const now = Date.now();
+    return await ctx.db.insert("folders", {
+      name: args.name,
+      userId: user._id,
+      createdAt: now,
+      updatedAt: now,
+    });
+  },
+});
+
+// Move project to folder
+export const moveToFolder = mutation({
+  args: {
+    projectId: v.id("projects"),
+    folderId: v.optional(v.id("folders")),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(internal.users.getCurrentUser);
+
+    // Verify project ownership
+    const project = await ctx.db.get(args.projectId);
+    if (!project || project.userId !== user._id) {
+      throw new Error("Project not found or access denied");
+    }
+
+    // Update project folder
+    await ctx.db.patch(args.projectId, {
+      folderId: args.folderId,
+      updatedAt: Date.now(),
+    });
+  },
+});
+
+// Delete folder (moves all projects to root)
+export const deleteFolder = mutation({
+  args: { folderId: v.id("folders") },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(internal.users.getCurrentUser);
+
+    // Verify folder ownership
+    const folder = await ctx.db.get(args.folderId);
+    if (!folder || folder.userId !== user._id) {
+      throw new Error("Folder not found or access denied");
+    }
+
+    // Move all projects in this folder to root
+    const projectsInFolder = await ctx.db
+      .query("projects")
+      .withIndex("by_folder", (q) => q.eq("folderId", args.folderId))
+      .collect();
+
+    for (const project of projectsInFolder) {
+      await ctx.db.patch(project._id, {
+        folderId: undefined,
+        updatedAt: Date.now(),
+      });
+    }
+
+    // Delete the folder
+    await ctx.db.delete(args.folderId);
+  },
+});
+
+// Rename folder
+export const renameFolder = mutation({
+  args: { 
+    folderId: v.id("folders"),
+    name: v.string()
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(internal.users.getCurrentUser);
+
+    // Verify folder ownership
+    const folder = await ctx.db.get(args.folderId);
+    if (!folder || folder.userId !== user._id) {
+      throw new Error("Folder not found or access denied");
+    }
+
+    // Validate name
+    const trimmedName = args.name.trim();
+    if (!trimmedName) {
+      throw new Error("Folder name cannot be empty");
+    }
+
+    // Check if folder with same name already exists
+    const existingFolder = await ctx.db
+      .query("folders")
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .filter((q) => q.eq(q.field("name"), trimmedName))
+      .first();
+
+    if (existingFolder && existingFolder._id !== args.folderId) {
+      throw new Error("A folder with this name already exists");
+    }
+
+    // Update folder name
+    await ctx.db.patch(args.folderId, {
+      name: trimmedName,
+      updatedAt: Date.now(),
+    });
+
+    return args.folderId;
+  },
+});
+
 // Create a new project
 export const create = mutation({
   args: {
@@ -28,6 +181,7 @@ export const create = mutation({
     width: v.number(),
     height: v.number(),
     canvasState: v.optional(v.any()),
+    folderId: v.optional(v.id("folders")),
   },
   handler: async (ctx, args) => {
     const user = await ctx.runQuery(internal.users.getCurrentUser);
@@ -56,6 +210,7 @@ export const create = mutation({
       width: args.width,
       height: args.height,
       canvasState: args.canvasState,
+      folderId: args.folderId,
       createdAt: Date.now(),
       updatedAt: Date.now(),
     });

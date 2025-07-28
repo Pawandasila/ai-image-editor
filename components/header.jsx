@@ -24,15 +24,11 @@ export default function Header() {
       {/* Center - Glass Navigation Container */}
 
       <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-full px-8 py-3 flex items-center justify-between gap-8">
-        {/* Logo */}
-        <Link href="/" className="mr-10 md:mr-20">
-          <Image
-            src="/logo-text.png"
-            alt="Pixxel Logo"
-            className="min-w-24 object-cover"
-            width={96}
-            height={24}
-          />
+        
+        <Link href="/" className="mr-10 md:mr-20 flex items-center gap-2 select-none">
+          <span className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-purple-400 via-cyan-400 to-green-400 bg-clip-text text-transparent uppercase drop-shadow-lg">
+            pixora
+          </span>
         </Link>
 
         {path === "/" && (

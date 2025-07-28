@@ -6,6 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -22,17 +29,24 @@ import { api } from "@/convex/_generated/api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-export function NewProjectModal({ isOpen, onClose }) {
+export function NewProjectModal({ isOpen, onClose, defaultFolderId }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [projectTitle, setProjectTitle] = useState("");
+  const [selectedFolderId, setSelectedFolderId] = useState(defaultFolderId);
   const [isUploading, setIsUploading] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   const { mutate: createProject } = useConvexMutation(api.projects.create);
   const { data: projects } = useConvexQuery(api.projects.getUserProjects);
+  const { data: folders = [] } = useConvexQuery(api.projects.getUserFolders);
   const { canCreateProject, isFree } = usePlanAccess();
   const router = useRouter();
+
+  // Update selected folder when defaultFolderId changes
+  React.useEffect(() => {
+    setSelectedFolderId(defaultFolderId);
+  }, [defaultFolderId]);
 
   // Check if user can create new project
   const currentProjectCount = projects?.length || 0;
@@ -101,6 +115,7 @@ export function NewProjectModal({ isOpen, onClose }) {
         width: uploadData.width || 800,
         height: uploadData.height || 600,
         canvasState: null,
+        folderId: selectedFolderId || undefined,
       });
 
       toast.success("Project created successfully!");
@@ -129,7 +144,7 @@ export function NewProjectModal({ isOpen, onClose }) {
   return (
     <>
       <Dialog open={isOpen} onOpenChange={handleClose}>
-        <DialogContent className="max-w-2xl bg-slate-800 border-white/10">
+        <DialogContent className="max-w-2xl bg-slate-800 border-white/10 overflow-hidden">
           <DialogHeader>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -148,7 +163,7 @@ export function NewProjectModal({ isOpen, onClose }) {
             </div>
           </DialogHeader>
 
-          <div className="space-y-6">
+          <div className="space-y-6 overflow-hidden">
             {/* Project Limit Warning for Free Users */}
             {isFree && currentProjectCount >= 2 && (
               <Alert className="bg-amber-500/10 border-amber-500/20">
@@ -160,8 +175,8 @@ export function NewProjectModal({ isOpen, onClose }) {
                       : "Project Limit Reached"}
                   </div>
                   {currentProjectCount === 2
-                    ? "This will be your last free project. Upgrade to Pixxel Pro for unlimited projects."
-                    : "Free plan is limited to 3 projects. Upgrade to Pixxel Pro to create more projects."}
+                    ? "This will be your last free project. Upgrade to Pixora Pro for unlimited projects."
+                    : "Free plan is limited to 3 projects. Upgrade to Pixora Pro to create more projects."}
                 </AlertDescription>
               </Alert>
             )}
@@ -191,13 +206,13 @@ export function NewProjectModal({ isOpen, onClose }) {
                 </p>
               </div>
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-6 overflow-hidden">
                 {/* Image Preview */}
-                <div className="relative">
+                <div className="relative overflow-hidden rounded-xl border border-white/10">
                   <img
                     src={previewUrl}
                     alt="Preview"
-                    className="w-full h-64 object-cover rounded-xl border border-white/10"
+                    className="w-full h-64 object-contain bg-slate-800/50"
                   />
                   <Button
                     variant="ghost"
@@ -218,25 +233,55 @@ export function NewProjectModal({ isOpen, onClose }) {
                   <Label htmlFor="project-title" className="text-white">
                     Project Title
                   </Label>
-                  <Input
-                    id="project-title"
-                    type="text"
-                    value={projectTitle}
-                    onChange={(e) => setProjectTitle(e.target.value)}
-                    placeholder="Enter project name..."
-                    className="bg-slate-700 border-white/20 text-white placeholder-white/50 focus:border-cyan-400 focus:ring-cyan-400"
-                  />
+                  <div className="relative">
+                    <Input
+                      id="project-title"
+                      type="text"
+                      value={projectTitle}
+                      onChange={(e) => setProjectTitle(e.target.value)}
+                      placeholder="Enter project name..."
+                      className="bg-slate-700 border-white/20 text-white placeholder-white/50 focus:border-cyan-400 focus:ring-cyan-400 text-sm w-full pr-4"
+                      style={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap'
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Folder Selection */}
+                <div className="space-y-2">
+                  <Label htmlFor="folder-select" className="text-white">
+                    Folder (Optional)
+                  </Label>
+                  <Select
+                    value={selectedFolderId || "root"}
+                    onValueChange={(value) => setSelectedFolderId(value === "root" ? null : value)}
+                  >
+                    <SelectTrigger className="bg-slate-700 border-white/20 text-white focus:border-cyan-400 focus:ring-cyan-400">
+                      <SelectValue placeholder="Choose folder or leave in root" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-700 border-white/20">
+                      <SelectItem value="root">No folder (Root)</SelectItem>
+                      {folders?.map((folder) => (
+                        <SelectItem key={folder._id} value={folder._id}>
+                          {folder.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {/* File Details */}
-                <div className="bg-slate-700/50 rounded-lg p-4">
-                  <div className="flex items-center gap-3">
-                    <ImageIcon className="h-5 w-5 text-cyan-400" />
-                    <div>
-                      <p className="text-white font-medium">
+                <div className="bg-slate-700/50 rounded-lg p-4 overflow-hidden">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <ImageIcon className="h-5 w-5 text-cyan-400 flex-shrink-0" />
+                    <div className="flex-1 min-w-0 overflow-hidden">
+                      <p className="text-white font-medium text-sm truncate overflow-hidden" title={selectedFile.name}>
                         {selectedFile.name}
                       </p>
-                      <p className="text-white/70 text-sm">
+                      <p className="text-white/70 text-xs">
                         {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
                       </p>
                     </div>

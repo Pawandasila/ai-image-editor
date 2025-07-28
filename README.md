@@ -1,4 +1,4 @@
-# 🎨 Pixxel - AI-Powered Image Editor
+# 🎨 Pixora - AI-Powered Image Editor
 
 A modern, full-stack AI image editing platform built with Next.js, featuring real-time canvas editing, AI-powered transformations, and professional-grade image processing tools.
 
@@ -237,10 +237,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- 📧 Email: support@pixxel.com
+- 📧 Email: support@pixora.com
 - 🐛 Issues: [GitHub Issues](https://github.com/yourusername/ai-image-editor/issues)
 - 💬 Discussions: [GitHub Discussions](https://github.com/yourusername/ai-image-editor/discussions)
 
 ---
 
-<p align="center">Made with ❤️ by the Pixxel Team</p>
+<p align="center">Made with ❤️ by the Pixora Team</p>

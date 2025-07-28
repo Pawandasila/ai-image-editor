@@ -432,7 +432,7 @@ const HeroSection = () => {
                       </div>
                       <div>
                         <span className="font-bold text-xl bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                          Pixxel
+                          Pixora
                         </span>
                         <div className="flex items-center space-x-2">
                           <span className="text-xs bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-1 rounded-full">

@@ -65,6 +65,7 @@ export default defineSchema({
     name: v.string(), // Folder name
     userId: v.id("users"), // Owner
     createdAt: v.number(),
+    updatedAt: v.optional(v.number()), // Last modification time
   }).index("by_user", ["userId"]), // User's folders
 });
 
