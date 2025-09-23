@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useParams } from "next/navigation";
 import { useConvexQuery } from "@/hooks/use-convex-query";
+import { useStoreUser } from "@/hooks/use-store-user";
 import { api } from "@/convex/_generated/api";
 import { Loader2, Monitor } from "lucide-react";
 import { EditorTopBar } from "./_components/editor-topbar";
@@ -14,16 +15,53 @@ import { RingLoader } from "react-spinners";
 export default function EditorPage() {
   const params = useParams();
   const projectId = params.projectId;
-
+  const [canvasEditor, setCanvasEditor] = useState(null);
   const [processingMessage, setProcessingMessage] = useState(null);
 
   const [activeTool, setActiveTool] = useState("resize");
+
+  const { isLoading: isUserLoading, isAuthenticated } = useStoreUser();
 
   const {
     data: project,
     isLoading,
     error,
-  } = useConvexQuery(api.projects.getProject, { projectId });
+  } = useConvexQuery(
+    api.projects.getProject,
+    isAuthenticated ? { projectId } : "skip"
+  );
+
+  if (isUserLoading) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-cyan-400" />
+          <p className="text-white/70">Setting up your account...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-white mb-2">
+            Authentication Required
+          </h1>
+          <p className="text-white/70 mb-4">
+            Please sign in to access this project.
+          </p>
+          <button
+            onClick={() => (window.location.href = "/sign-in")}
+            className="px-4 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600"
+          >
+            Sign In
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (error) {
     console.error("Error loading project:", error);
@@ -99,6 +137,8 @@ export default function EditorPage() {
   return (
     <CanvasContext.Provider
       value={{
+        canvasEditor,
+        setCanvasEditor,
         activeTool,
         onToolChange: setActiveTool,
         processingMessage,

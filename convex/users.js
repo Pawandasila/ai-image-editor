@@ -44,7 +44,10 @@ export const getCurrentUser = query({
   handler: async (ctx) => {
     try {
       const identity = await ctx.auth.getUserIdentity();
+      console.log("Auth identity:", identity ? "Found" : "Not found");
+      
       if (!identity) {
+        console.error("No authentication identity found");
         throw new Error("Not authenticated");
       }
 
@@ -56,9 +59,11 @@ export const getCurrentUser = query({
         .unique();
 
       if (!user) {
-        throw new Error("User not found");
+        console.error("User not found for token:", identity.tokenIdentifier);
+        throw new Error("User not found - please refresh the page");
       }
 
+      console.log("User found:", user._id);
       return user;
     } catch (error) {
       console.error("Error in getCurrentUser:", error);

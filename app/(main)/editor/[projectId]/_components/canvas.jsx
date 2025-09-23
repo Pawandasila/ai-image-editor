@@ -26,10 +26,19 @@ function CanvasEditor({ project }) {
   };
 
   useEffect(() => {
-    if (!canvasRef.current || !project || canvasEditor) return;
+    if (!canvasRef.current || !project) return;
+
+    if (canvasEditor) return;
 
     const initializeCanvas = async () => {
       setIsLoading(true);
+
+      if (canvasRef.current) {
+        const existingCanvas = canvasRef.current.__fabric;
+        if (existingCanvas) {
+          existingCanvas.dispose();
+        }
+      }
 
       const viewportScale = calculateViewportScale();
       const canvas = new Canvas(canvasRef.current, {
@@ -47,7 +56,6 @@ function CanvasEditor({ project }) {
         skipTargetFind: false,
       });
 
-      // Sync both lower and upper canvas layers
       canvas.setDimensions(
         {
           width: project.width * viewportScale,
@@ -58,7 +66,6 @@ function CanvasEditor({ project }) {
 
       canvas.setZoom(viewportScale);
 
-      // High DPI handling (optional, comment if you don’t need)
       const scaleFactor = window.devicePixelRatio || 1;
       if (scaleFactor > 1) {
         canvas.getElement().width = project.width * scaleFactor;
@@ -66,7 +73,6 @@ function CanvasEditor({ project }) {
         canvas.getContext().scale(scaleFactor, scaleFactor);
       }
 
-      // Load image
       if (project.currentImageUrl || project.originalImageUrl) {
         try {
           const imageUrl = project.currentImageUrl || project.originalImageUrl;
@@ -104,7 +110,6 @@ function CanvasEditor({ project }) {
         }
       }
 
-      // Load saved canvas state
       if (project.canvasState) {
         try {
           await canvas.loadFromJSON(project.canvasState);
@@ -119,7 +124,6 @@ function CanvasEditor({ project }) {
       setCanvasEditor(canvas);
 
       setTimeout(() => {
-        // workaround for initial resize issues
         window.dispatchEvent(new Event("resize"));
       }, 500);
 
@@ -130,11 +134,28 @@ function CanvasEditor({ project }) {
 
     return () => {
       if (canvasEditor) {
-        canvasEditor.dispose();
+        try {
+          canvasEditor.dispose();
+        } catch (error) {
+          console.warn("Error disposing canvas:", error);
+        }
         setCanvasEditor(null);
       }
     };
-  }, [project]);
+  }, [project?._id]);
+
+  useEffect(() => {
+    return () => {
+      if (canvasEditor) {
+        try {
+          canvasEditor.dispose();
+        } catch (error) {
+          console.warn("Error disposing canvas on unmount:", error);
+        }
+        setCanvasEditor(null);
+      }
+    };
+  }, []);
 
   const saveCanvasState = async () => {
     if (!canvasEditor || !project) return;
@@ -208,7 +229,6 @@ function CanvasEditor({ project }) {
     return () => window.removeEventListener("resize", handleResize);
   }, [canvasEditor, project]);
 
-  // Handle automatic tab switching when text is selected
   useEffect(() => {
     if (!canvasEditor || !onToolChange) return;
 
