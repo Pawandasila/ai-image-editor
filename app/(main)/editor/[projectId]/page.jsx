@@ -14,18 +14,60 @@ import { RingLoader } from "react-spinners";
 export default function EditorPage() {
   const params = useParams();
   const projectId = params.projectId;
-  const [canvasEditor, setCanvasEditor] = useState(null);
+
   const [processingMessage, setProcessingMessage] = useState(null);
 
-  // State for active tool
   const [activeTool, setActiveTool] = useState("resize");
 
-  // Get project data
   const {
     data: project,
     isLoading,
     error,
   } = useConvexQuery(api.projects.getProject, { projectId });
+
+  if (error) {
+    console.error("Error loading project:", error);
+
+    if (error.message?.includes("Not authenticated")) {
+      return (
+        <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-white mb-2">
+              Authentication Required
+            </h1>
+            <p className="text-white/70 mb-4">
+              Please sign in to access this project.
+            </p>
+            <button
+              onClick={() => (window.location.href = "/sign-in")}
+              className="px-4 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600"
+            >
+              Sign In
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-white mb-2">
+            Error Loading Project
+          </h1>
+          <p className="text-white/70 mb-4">
+            {error.message || "Something went wrong"}
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -38,7 +80,7 @@ export default function EditorPage() {
     );
   }
 
-  if (error || !project) {
+  if (!project) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
         <div className="text-center">
@@ -57,8 +99,6 @@ export default function EditorPage() {
   return (
     <CanvasContext.Provider
       value={{
-        canvasEditor,
-        setCanvasEditor,
         activeTool,
         onToolChange: setActiveTool,
         processingMessage,

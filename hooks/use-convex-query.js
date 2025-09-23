@@ -12,15 +12,20 @@ export const useConvexQuery = (query, ...args) => {
   useEffect(() => {
     if (result === undefined) {
       setIsLoading(true);
+      setError(null);
     } else {
       try {
         setData(result);
         setError(null);
-      } catch (err) {
-        setError(err);
-        toast.error(err.message);
-      } finally {
         setIsLoading(false);
+      } catch (err) {
+        console.error("Error in useConvexQuery:", err);
+        setError(err);
+        setIsLoading(false);
+        // Only show toast for non-authentication errors to avoid spam
+        if (!err.message?.includes("Not authenticated")) {
+          toast.error(err.message || "An error occurred");
+        }
       }
     }
   }, [result]);
